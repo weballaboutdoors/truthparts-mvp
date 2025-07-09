@@ -1,0 +1,1026 @@
+<!--
+Part Identifier Multi-Step Form
+- To customize questions/steps, edit the steps array in the <script> tag below.
+- Each step can have: label, explanation, type (text, email, textarea, file), name, placeholder, required, etc.
+- The form uses Formspree (action="https://formspree.io/f/xwkjnwgk").
+- Styling matches the main site (Montserrat, white cards, accent buttons).
+- Progress bar, back/next navigation, and confetti/thank you on submit included.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Part Identifier | TruthParts.com</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #f8fafc;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #222;
+      margin: 0;
+      min-height: 100vh;
+      width: 95vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      padding: 3.5rem 4rem 4rem 4rem;
+      margin: 0 auto;
+      max-width: 560px;
+      /* width: 100%; */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 7px;
+      background: #f3f3f7;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, #f97316 0%, #8b5cf6 100%);
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    }
+    .step-card {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.7s cubic-bezier(.4,0,.2,1);
+      min-height: 320px;
+    }
+    
+    .step-card.welcome-step {
+      text-align: center;
+      padding: 3.5rem 2.5rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      max-width: 452px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    @media (max-width: 700px) {
+      .step-card.welcome-step {
+        padding: 2rem 0.7rem;
+      }
+    }
+    
+    .step-card.welcome-step::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%);
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .welcome-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #f97316 0%, #8b5cf6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(249, 115, 22, 0.2);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .welcome-icon::before {
+      content: '⚙';
+      font-size: 2.2rem;
+      color: white;
+      font-weight: 300;
+    }
+    
+    .welcome-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 1.2rem;
+      line-height: 1.1;
+      position: relative;
+      z-index: 2;
+      letter-spacing: -0.02em;
+    }
+    
+    .welcome-subtitle {
+      font-size: 1.15rem;
+      color: #6b7280;
+      margin-bottom: 2.5rem;
+      max-width: 480px;
+      line-height: 1.5;
+      position: relative;
+      z-index: 2;
+      font-weight: 400;
+    }
+    
+    .welcome-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .welcome-feature {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      border: 1px solid rgba(229, 231, 235, 0.8);
+      transition: all 0.2s ease;
+    }
+    
+    .welcome-feature:hover {
+      background: rgba(255, 255, 255, 1);
+      border-color: rgba(139, 92, 246, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .welcome-feature-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #f97316 0%, #8b5cf6 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .welcome-feature-text {
+      font-size: 0.95rem;
+      color: #374151;
+      font-weight: 500;
+    }
+    
+    .welcome-cta {
+      background: linear-gradient(135deg, #f97316 0%, #8b5cf6 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 1.1rem 2.8rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(249, 115, 22, 0.25);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .welcome-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35);
+    }
+    
+    .welcome-cta:active {
+      transform: translateY(0);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: none; }
+    }
+    .step-label {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+      text-align: center;
+    }
+    
+    .step-explanation {
+      font-size: 1.25rem;
+      color: #555;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      max-width: 420px;
+    }
+    .form-field {
+      width: 100%;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .form-field label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #374151;
+      font-size: 1.08rem;
+    }
+    .form-field input,
+    .form-field textarea {
+      font-family: inherit;
+      font-size: 1.13rem;
+      border-radius: 6px;
+      border: 1.5px solid #e5e7eb;
+      padding: 1rem 1.2rem;
+      outline: none;
+      background: #f8fafc;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus {
+      border-color: #8b5cf6;
+    }
+    .form-field input[type="file"] {
+      padding: 0.5rem 0;
+      background: none;
+    }
+    .form-field textarea {
+      min-height: 120px;
+      font-size: 1.18rem;
+      padding: 1.2rem 1.2rem;
+      line-height: 1.6;
+    }
+    
+    .file-upload-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+    
+    .file-upload-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.2rem;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 6px;
+      background: #f8fafc;
+      transition: border-color 0.2s;
+    }
+    
+    .file-upload-item:hover {
+      border-color: #8b5cf6;
+    }
+    
+    .file-upload-item label {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #374151;
+      margin: 0;
+      min-width: 140px;
+    }
+    
+    .file-upload-item input[type="file"] {
+      flex: 1;
+      padding: 0.3rem 0;
+      border: none;
+      background: none;
+      font-size: 0.9rem;
+    }
+    
+    .file-name {
+      font-size: 0.9rem;
+      color: #6b7280;
+      flex: 1;
+      margin-left: 0.5rem;
+    }
+    
+    .remove-file-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .remove-file-btn:hover {
+      background: #dc2626;
+    }
+    
+    .contact-info-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      width: 100%;
+    }
+    
+    .contact-info-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    
+    .contact-info-field label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #374151;
+      margin: 0;
+    }
+    
+    .contact-info-field input {
+      font-family: inherit;
+      font-size: 1.13rem;
+      border-radius: 6px;
+      border: 1.5px solid #e5e7eb;
+      padding: 1rem 1.2rem;
+      outline: none;
+      background: #f8fafc;
+      transition: border-color 0.2s;
+    }
+    
+    .contact-info-field input:focus {
+      border-color: #8b5cf6;
+    }
+    
+    .rating-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .star-rating-star {
+      font-size: 2rem;
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: color 0.2s;
+      user-select: none;
+    }
+    
+    .star-rating-star:hover,
+    .star-rating-star.filled {
+      color: #fbbf24;
+    }
+    
+    .star-rating-star:hover ~ .star-rating-star {
+      color: #e5e7eb;
+    }
+    
+    .form-nav {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 0.8rem;
+      gap: 1rem;
+    }
+    .form-nav button {
+      font-family: inherit;
+      font-size: 1.18rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      padding: 1rem 2.5rem;
+      background: #8b5cf6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+      box-shadow: 0 2px 8px rgba(139,92,246,0.06);
+    }
+    .form-nav button:disabled {
+      background: #e5e7eb;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+    
+    .form-nav .back-btn.final-step {
+      width: 100%;
+      margin-top: 1.5rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #f97316 0%, #8b5cf6 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.9rem 0;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(249,115,22,0.10);
+      transition: background 0.18s, box-shadow 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .form-nav .back-btn.final-step:active {
+      background: #8b5cf6;
+    }
+    
+    .form-nav .next-btn {
+      background: #f97316;
+    }
+    
+    .form-nav .start-btn {
+      margin: 0 auto;
+      display: block;
+    }
+    
+    .form-nav .next-btn:hover {
+      background: #fb923c;
+    }
+    .form-nav .back-btn:hover {
+      background: #a78bfa;
+    }
+    .submit-btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #f97316 0%, #8b5cf6 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.9rem 0;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(249,115,22,0.10);
+      transition: background 0.18s, box-shadow 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .submit-btn:active {
+      background: #8b5cf6;
+    }
+    .thank-you {
+      text-align: center;
+      padding: 2.5rem 0 1.5rem 0;
+      font-size: 1.25rem;
+      color: #374151;
+      min-height: 220px;
+    }
+    .confetti {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+      display: none;
+    }
+    .home-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      font-family: inherit;
+      font-size: 1.18rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      padding: 1rem 2.5rem;
+      background: #8b5cf6;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+      box-shadow: 0 2px 8px rgba(139,92,246,0.06);
+    }
+    .home-btn:hover {
+      background: #f97316;
+      color: #fff;
+    }
+    .step-card.wide-step {
+      max-width: 560px;
+    }
+    @media (max-width: 700px) {
+      .form-container {
+        padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+        margin: 1.2rem 0 1.2rem 0;
+        max-width: 98vw;
+      }
+      .step-card {
+        min-height: 220px;
+      }
+      .step-explanation {
+        max-width: 98vw;
+      }
+    }
+    .required-asterisk {
+      color: #f97316;
+      font-size: 1.1em;
+      margin-left: 0.2em;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <form class="form-container" id="partIdentifierForm" action="https://formspree.io/f/xwkjnwgk" method="POST" enctype="multipart/form-data" autocomplete="on">
+    <div class="progress-bar"><div class="progress" id="progressBar"></div></div>
+    <div id="stepCards"></div>
+    <div class="form-nav" id="formNav"></div>
+  </form>
+  <div class="thank-you" id="thankYou" style="display:none;">
+    <h2>Thank you!</h2>
+    <p>We’ve received your request. Our team will research your part and get back to you within 48–72 hours.<br>If we can’t find an exact replacement, we’ll offer a solution that usually works.<br><br>We appreciate your effort and trust!</p>
+    <a href="index.html" class="home-btn">Back to Home</a>
+  </div>
+  <canvas class="confetti" id="confetti"></canvas>
+  <script>
+    // === Customize your steps here ===
+    const steps = [
+      {
+        label: 'Welcome to the Part Identifier',
+        explanation: 'To get the best results, please have clear photos of your part ready. This process takes about 5 minutes. Our team will research your request (99.7% success rate) and respond in 2–3 business days. Click Start to begin!',
+        type: 'start',
+        button: 'Start'
+      },
+      {
+        label: 'What part do you need help identifying?',
+        explanation: 'Describe the part or hardware you need help with. The more detail, the better!',
+        type: 'textarea',
+        name: 'part_description',
+        placeholder: 'e.g. Casement window operator, sliding door lock, etc.',
+        required: true
+      },
+      {
+        label: 'Upload photos of your part',
+        explanation: 'Upload up to 4 photos to help us identify your part. Clear photos from different angles work best!',
+        type: 'multiple_files',
+        files: [
+          { name: 'part_photo_main', label: 'Main Photo', required: false },
+          { name: 'part_photo_angle2', label: 'Different Angle', required: false },
+          { name: 'part_photo_closeup', label: 'Markings/Numbers', required: false },
+          { name: 'part_photo_installed', label: 'Installed', required: false }
+        ]
+      },
+      {
+        label: 'Any additional details?',
+        explanation: 'Share any measurements, markings, or other info that could help us identify your part.',
+        type: 'textarea',
+        name: 'additional_details',
+        placeholder: 'e.g. Length, width, stamped numbers, etc.',
+        required: false
+      },
+      {
+        label: 'Your Contact Information',
+        explanation: 'Please provide your contact details so we can get back to you with your part identification results.',
+        type: 'contact_info',
+        fields: [
+          { name: 'name', label: 'Your Name', type: 'text', placeholder: 'Your name', required: true },
+          { name: 'phone', label: 'Your Phone Number', type: 'tel', placeholder: '(555) 123-4567', required: true },
+          { name: 'email', label: 'Your Email', type: 'email', placeholder: 'you@email.com', required: true }
+        ]
+      },
+      {
+        label: 'How was your experience?',
+        explanation: 'We\'d love to hear your feedback! How easy was it to use our Part Identifier?',
+        type: 'feedback',
+        fields: [
+          { name: 'experience_rating', label: 'Rate your experience (1-5 stars)', type: 'rating', required: false },
+          { name: 'feedback_comments', label: 'Any comments or suggestions?', type: 'textarea', placeholder: 'Tell us what you think...', required: false }
+        ]
+      },
+      {
+        label: 'Anything else you\'d like us to know?',
+        explanation: 'Optional: Add any final notes or requests.',
+        type: 'textarea',
+        name: 'final_notes',
+        placeholder: 'Any other info…',
+        required: false
+      }
+    ];
+
+    // === Multi-step form logic ===
+    let currentStep = 0;
+    const form = document.getElementById('partIdentifierForm');
+    const stepCards = document.getElementById('stepCards');
+    const formNav = document.getElementById('formNav');
+    const progressBar = document.getElementById('progressBar');
+    const thankYou = document.getElementById('thankYou');
+    const confettiCanvas = document.getElementById('confetti');
+    
+    // Store form data as user navigates
+    const formData = {};
+
+    function formatPhoneNumber(value) {
+      // Remove all non-digits
+      const phoneNumber = value.replace(/\D/g, '');
+      
+      // Format as (XXX) XXX-XXXX
+      if (phoneNumber.length <= 3) {
+        return phoneNumber;
+      } else if (phoneNumber.length <= 6) {
+        return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+      } else {
+        return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+      }
+    }
+
+    function saveCurrentStepData() {
+      const step = steps[currentStep];
+      if (step.type === 'multiple_files') {
+        // Save file inputs
+        step.files.forEach(file => {
+          const input = document.querySelector(`input[name="${file.name}"]`);
+          if (input && input.files.length > 0) {
+            formData[file.name] = input.files[0];
+          }
+        });
+      } else if (step.type === 'contact_info') {
+        // Save contact info fields
+        step.fields.forEach(field => {
+          const input = document.querySelector(`input[name="${field.name}"], textarea[name="${field.name}"]`);
+          if (input) {
+            formData[field.name] = input.value;
+          }
+        });
+      } else if (step.type === 'feedback') {
+        // Save feedback fields
+        step.fields.forEach(field => {
+          const input = document.querySelector(`input[name="${field.name}"], textarea[name="${field.name}"]`);
+          if (input) {
+            formData[field.name] = input.value;
+          }
+        });
+      } else if (step.type !== 'start') {
+        // Save regular inputs
+        const input = document.querySelector(`input[name="${step.name}"], textarea[name="${step.name}"]`);
+        if (input) {
+          formData[step.name] = input.value;
+        }
+      }
+    }
+
+    function restoreStepData() {
+      const step = steps[currentStep];
+      if (step.type === 'multiple_files') {
+        // Restore file inputs
+        step.files.forEach(file => {
+          const input = document.querySelector(`input[name="${file.name}"]`);
+          const fileNameSpan = input ? input.closest('.file-upload-item').querySelector('.file-name') : null;
+          if (input && formData[file.name]) {
+            // Create a new FileList-like object
+            const dt = new DataTransfer();
+            dt.items.add(formData[file.name]);
+            input.files = dt.files;
+            if (fileNameSpan) {
+              // Remove any previous preview
+              let previewImg = fileNameSpan.querySelector('.file-preview-img');
+              if (previewImg) previewImg.remove();
+              // Show preview if image
+              if (formData[file.name].type && formData[file.name].type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.className = 'file-preview-img';
+                img.style.maxWidth = '80px';
+                img.style.maxHeight = '48px';
+                img.style.marginLeft = '1rem';
+                img.style.borderRadius = '4px';
+                img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+                img.alt = 'Preview';
+                img.src = URL.createObjectURL(formData[file.name]);
+                fileNameSpan.textContent = '';
+                fileNameSpan.appendChild(img);
+              } else {
+                fileNameSpan.textContent = formData[file.name].name;
+              }
+            }
+          }
+        });
+      } else if (step.type === 'contact_info') {
+        // Restore contact info fields
+        step.fields.forEach(field => {
+          const input = document.querySelector(`input[name="${field.name}"], textarea[name="${field.name}"]`);
+          if (input && formData[field.name] !== undefined) {
+            input.value = formData[field.name];
+          }
+        });
+      } else if (step.type === 'feedback') {
+        // Restore feedback fields
+        step.fields.forEach(field => {
+          const input = document.querySelector(`input[name="${field.name}"], textarea[name="${field.name}"]`);
+          if (input && formData[field.name] !== undefined) {
+            input.value = formData[field.name];
+            
+            // Restore star rating display
+            if (field.type === 'rating' && formData[field.name] > 0) {
+              const ratingContainer = input.previousElementSibling;
+              if (ratingContainer && ratingContainer.classList.contains('rating-container')) {
+                const stars = ratingContainer.querySelectorAll('.star-rating-star');
+                stars.forEach((star, index) => {
+                  if (index < formData[field.name]) {
+                    star.classList.add('filled');
+                  } else {
+                    star.classList.remove('filled');
+                  }
+                });
+              }
+            }
+          }
+        });
+      } else if (step.type !== 'start') {
+        // Restore regular inputs
+        const input = document.querySelector(`input[name="${step.name}"], textarea[name="${step.name}"]`);
+        if (input && formData[step.name] !== undefined) {
+          input.value = formData[step.name];
+        }
+      }
+    }
+
+    function renderStep() {
+      // Progress
+      const percent = Math.round((currentStep) / (steps.length - 1) * 100);
+      progressBar.style.width = percent + '%';
+      // Step content
+      const step = steps[currentStep];
+      let wideStepTypes = ['feedback', 'contact_info'];
+      if (step.type === 'textarea' && step.name === 'additional_details') wideStepTypes.push('textarea');
+      let isWideStep = wideStepTypes.includes(step.type) || (step.type === 'textarea' && step.name === 'additional_details');
+      let html = `<div class="step-card${step.type === 'start' ? ' welcome-step' : ''}${isWideStep ? ' wide-step' : ''}">`;
+      if (step.type !== 'start') {
+        html += `<div class="step-label">${step.label}</div>`;
+        if (step.explanation) html += `<div class="step-explanation">${step.explanation}</div>`;
+      }
+      if (step.type === 'start') {
+        html += `<div class="welcome-step">`;
+        html += `<div class="welcome-title">Part Identifier</div>`;
+        html += `<div style='font-size:1.08rem;color:#374151;margin-bottom:1.1rem;'>Here’s what you’ll need and what to expect:</div>`;
+        html += `<div class="welcome-features" style="margin-bottom:2.2rem;">`;
+        html += `<div class="welcome-feature"><span class="welcome-feature-icon">1</span><span class="welcome-feature-text">Take clear pictures of your part before starting.</span></div>`;
+        html += `<div class="welcome-feature"><span class="welcome-feature-icon">2</span><span class="welcome-feature-text">This process takes about 5 minutes.</span></div>`;
+        html += `<div class="welcome-feature"><span class="welcome-feature-icon">3</span><span class="welcome-feature-text">Have your images ready to upload.</span></div>`;
+        html += `<div class="welcome-feature"><span class="welcome-feature-icon">4</span><span class="welcome-feature-text">Our team will respond in 2–3 business days.</span></div>`;
+        html += `<div class="welcome-feature"><span class="welcome-feature-icon">5</span><span class="welcome-feature-text"><b>99.7% success rate</b> in finding solutions.</span></div>`;
+        html += `</div>`;
+        html += `<button type="button" class="welcome-cta">Get Started</button>`;
+        html += `</div>`;
+      } else if (step.type === 'textarea') {
+        html += `<div class="form-field"><label>${step.label}${step.required ? '<span class="required-asterisk">*</span>' : ''}</label><textarea name="${step.name}" placeholder="${step.placeholder || ''}" ${step.required ? 'required' : ''}></textarea></div>`;
+      } else if (step.type === 'text' || step.type === 'email' || step.type === 'tel') {
+        html += `<div class="form-field"><label>${step.label}${step.required ? '<span class="required-asterisk">*</span>' : ''}</label><input type="${step.type}" name="${step.name}" placeholder="${step.placeholder || ''}" ${step.required ? 'required' : ''}></div>`;
+      } else if (step.type === 'file') {
+        html += `<div class="form-field"><label>${step.label}${step.required ? '<span class="required-asterisk">*</span>' : ''}</label><input type="file" name="${step.name}" accept="image/*" ${step.required ? 'required' : ''}></div>`;
+      } else if (step.type === 'multiple_files') {
+        html += `<div class="form-field">`;
+        html += `<label>${step.label}`;
+        step.files.forEach(file => {
+          html += `${file.required ? '<span class="required-asterisk">*</span>' : ''}`;
+        });
+        html += `</label>`;
+        html += `<div class="file-upload-container">`;
+        step.files.forEach(file => {
+          html += `<div class="file-upload-item">`;
+          html += `<label for="file-${file.name}">${file.label}${file.required ? '<span class="required-asterisk">*</span>' : ''}</label>`;
+          html += `<input type="file" id="file-${file.name}" name="${file.name}" accept="image/*" ${file.required ? 'required' : ''}>`;
+          html += `<span class="file-name">No file selected</span>`;
+          html += `</div>`;
+        });
+        html += `</div>`;
+        html += `</div>`;
+      } else if (step.type === 'contact_info') {
+        html += `<div class="form-field">`;
+        html += `<div class="contact-info-fields">`;
+        step.fields.forEach(field => {
+          html += `<div class="contact-info-field">`;
+          html += `<label for="contact-${field.name}">${field.label}${field.required ? '<span class="required-asterisk">*</span>' : ''}</label>`;
+          if (field.type === 'text' || field.type === 'email' || field.type === 'tel') {
+            html += `<input type="${field.type}" id="contact-${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" ${field.required ? 'required' : ''}>`;
+          } else if (field.type === 'textarea') {
+            html += `<textarea id="contact-${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" ${field.required ? 'required' : ''}></textarea>`;
+          }
+          html += `</div>`;
+        });
+        html += `</div>`;
+        html += `</div>`;
+      } else if (step.type === 'feedback') {
+        html += `<div class="form-field">`;
+        html += `<div class="contact-info-fields">`; // Reusing contact-info-fields for feedback
+        step.fields.forEach(field => {
+          html += `<div class="contact-info-field">`;
+          html += `<label for="feedback-${field.name}">${field.label}${field.required ? '<span class="required-asterisk">*</span>' : ''}</label>`;
+          if (field.type === 'rating') {
+            html += `<div class="rating-container">`;
+            for (let i = 1; i <= 5; i++) {
+              html += `<span class="star-rating-star" data-rating="${i}" onclick="ratePart(this)">★</span>`;
+            }
+            html += `</div>`;
+            html += `<input type="hidden" name="${field.name}" value="0">`;
+          } else if (field.type === 'textarea') {
+            html += `<textarea id="feedback-${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" ${field.required ? 'required' : ''}></textarea>`;
+          }
+          html += `</div>`;
+        });
+        html += `</div>`;
+        html += `</div>`;
+      }
+      html += `</div>`;
+      stepCards.innerHTML = html;
+
+      // Handle file upload display
+      const fileInputs = stepCards.querySelectorAll('input[type="file"]');
+      fileInputs.forEach(input => {
+        const fileItem = input.closest('.file-upload-item');
+        const fileNameSpan = fileItem ? fileItem.querySelector('.file-name') : input.nextElementSibling;
+        
+        input.addEventListener('change', function() {
+          // Remove any previous preview
+          let previewImg = fileItem ? fileItem.querySelector('.file-preview-img') : null;
+          if (previewImg) previewImg.remove();
+
+          if (this.files && this.files.length > 0) {
+            const file = this.files[0];
+            fileNameSpan.textContent = file.name;
+            if (file.type.startsWith('image/')) {
+              const img = document.createElement('img');
+              img.className = 'file-preview-img';
+              img.style.maxWidth = '80px';
+              img.style.maxHeight = '80px';
+              img.style.marginLeft = '1rem';
+              img.style.borderRadius = '8px';
+              img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+              img.alt = 'Preview';
+              img.src = URL.createObjectURL(file);
+              fileNameSpan.textContent = '';
+              fileNameSpan.appendChild(img);
+            }
+          } else {
+            fileNameSpan.textContent = 'No file selected';
+          }
+        });
+      });
+      
+      // Handle phone number formatting
+      const phoneInput = stepCards.querySelector('input[type="tel"]');
+      if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+          const formatted = formatPhoneNumber(this.value);
+          this.value = formatted;
+        });
+      }
+      
+      // Handle welcome CTA button
+      const welcomeCta = stepCards.querySelector('.welcome-cta');
+      if (welcomeCta) {
+        welcomeCta.addEventListener('click', function() {
+          saveCurrentStepData();
+          currentStep = Math.min(steps.length - 1, currentStep + 1);
+          renderStep();
+        });
+      }
+
+      // Nav
+      let navHtml = '';
+      if (currentStep > 0) {
+        const backBtnClass = currentStep === steps.length - 1 ? 'back-btn final-step' : 'back-btn';
+        navHtml += `<button type="button" class="${backBtnClass}">Back</button>`;
+      }
+      if (currentStep < steps.length - 1 && step.type !== 'start') {
+        const nextBtnClass = currentStep === 0 ? 'next-btn start-btn' : 'next-btn';
+        navHtml += `<button type="button" class="${nextBtnClass}">${step.button || 'Next'}</button>`;
+      } else if (currentStep === steps.length - 1) {
+        navHtml += `<button type="submit" class="submit-btn">Submit &rarr;</button>`;
+      }
+      formNav.innerHTML = navHtml;
+      // Focus first input
+      setTimeout(() => {
+        const input = stepCards.querySelector('input,textarea');
+        if (input) input.focus();
+      }, 100);
+      
+      // Restore any saved data for this step
+      restoreStepData();
+    }
+
+    renderStep();
+
+    formNav.addEventListener('click', (e) => {
+      if (e.target.classList.contains('back-btn')) {
+        saveCurrentStepData();
+        currentStep = Math.max(0, currentStep - 1);
+        renderStep();
+      } else if (e.target.classList.contains('next-btn')) {
+        // Validate current step
+        const input = stepCards.querySelector('input,textarea');
+        if (input && input.required && !input.value) {
+          input.focus();
+          input.style.borderColor = '#f97316';
+          setTimeout(() => input.style.borderColor = '', 1200);
+          return;
+        }
+        saveCurrentStepData();
+        currentStep = Math.min(steps.length - 1, currentStep + 1);
+        renderStep();
+      } else if (e.target.classList.contains('welcome-cta')) {
+        saveCurrentStepData();
+        currentStep = Math.min(steps.length - 1, currentStep + 1);
+        renderStep();
+      }
+    });
+
+    // Progress bar click (optional: allow jumping to steps)
+    // progressBar.parentElement.addEventListener('click', (e) => { ... });
+
+    // Form submit
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      form.style.display = 'none';
+      thankYou.style.display = 'block';
+      launchConfetti();
+      // Actually submit to Formspree
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+    });
+
+    // Simple confetti effect
+    function launchConfetti() {
+      const canvas = confettiCanvas;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.style.display = 'block';
+      const ctx = canvas.getContext('2d');
+      const colors = ['#f97316', '#8b5cf6', '#fbbf24', '#34d399', '#60a5fa'];
+      let particles = [];
+      for (let i = 0; i < 120; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height,
+          r: 6 + Math.random() * 8,
+          d: Math.random() * 80,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          tilt: Math.random() * 10 - 10,
+          tiltAngle: 0,
+          tiltAngleIncremental: (Math.random() * 0.07) + 0.05
+        });
+      }
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particles.length; i++) {
+          let p = particles[i];
+          ctx.beginPath();
+          ctx.lineWidth = p.r;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x + p.tilt + p.r / 3, p.y);
+          ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 5);
+          ctx.stroke();
+        }
+        update();
+      }
+      function update() {
+        for (let i = 0; i < particles.length; i++) {
+          let p = particles[i];
+          p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+          p.x += Math.sin(0.5) * 2;
+          p.tiltAngle += p.tiltAngleIncremental;
+          p.tilt = Math.sin(p.tiltAngle) * 15;
+          // Let particles fall past the bottom of the screen
+          if (p.y > canvas.height + 100) {
+            p.x = Math.random() * canvas.width;
+            p.y = -10;
+          }
+        }
+      }
+      let confettiAnim = setInterval(draw, 16);
+      setTimeout(() => {
+        clearInterval(confettiAnim);
+        canvas.style.display = 'none';
+      }, 5000);
+    }
+
+    function ratePart(star) {
+      const ratingContainer = star.closest('.rating-container');
+      const ratingStars = ratingContainer.querySelectorAll('.star-rating-star');
+      const ratingValue = parseInt(star.dataset.rating);
+      const hiddenInput = ratingContainer.nextElementSibling;
+
+      ratingStars.forEach((s, index) => {
+        if (index < ratingValue) {
+          s.classList.add('filled');
+        } else {
+          s.classList.remove('filled');
+        }
+      });
+
+      // Store the rating value
+      if (hiddenInput && hiddenInput.type === 'hidden') {
+        hiddenInput.value = ratingValue;
+      }
+    }
+  </script>
+</body>
+</html> 
