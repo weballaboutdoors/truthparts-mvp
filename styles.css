@@ -970,18 +970,21 @@ h2 {
 }
 
 .tool-image {
-  width: 200px;
-  height: 140px;
-  overflow: hidden;
-  position: relative;
-  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  height: 150px;
+  padding-top: 0;
+  margin-bottom: 0.5rem;
+  overflow: visible;
+  background: none;
 }
 
 .tool-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+  max-height: 140px;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .hero-tool-card:hover .tool-image img {
@@ -1000,7 +1003,7 @@ h2 {
 .tool-content h4 {
   font-size: 1.3rem;
   font-weight: 700;
-  margin: 0 0 0.75rem 0;
+  margin: 0.2rem 0 0.75rem 0;
   color: #1f2937;
 }
 
@@ -1319,6 +1322,18 @@ h2 {
 #backToTop svg {
   display: block;
   color: inherit;
+} 
+
+.about-flex {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.about-logo img {
+  max-height: 150px;
+  width: auto;
+  vertical-align: middle;
 } 
 
 .door-hardware-section {
